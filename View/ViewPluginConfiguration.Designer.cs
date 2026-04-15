@@ -31,14 +31,12 @@
             QueryLabel = new Label();
             QueryInputTextBox = new SuchByte.MacroDeck.GUI.CustomControls.RoundedTextBox();
             SaveButton = new SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary();
-            label1 = new Label();
-            RefreshRateInput = new SuchByte.MacroDeck.GUI.CustomControls.RoundedTextBox();
             SuspendLayout();
             // 
             // QueryLabel
             // 
             QueryLabel.AutoSize = true;
-            QueryLabel.Location = new Point(14, 14);
+            QueryLabel.Location = new Point(14, 18);
             QueryLabel.Name = "QueryLabel";
             QueryLabel.Size = new Size(181, 16);
             QueryLabel.TabIndex = 0;
@@ -49,7 +47,7 @@
             QueryInputTextBox.BackColor = Color.FromArgb(65, 65, 65);
             QueryInputTextBox.Font = new Font("Tahoma", 9F);
             QueryInputTextBox.Icon = null;
-            QueryInputTextBox.Location = new Point(300, 14);
+            QueryInputTextBox.Location = new Point(224, 14);
             QueryInputTextBox.MaxCharacters = 32767;
             QueryInputTextBox.Multiline = false;
             QueryInputTextBox.Name = "QueryInputTextBox";
@@ -60,7 +58,7 @@
             QueryInputTextBox.ReadOnly = false;
             QueryInputTextBox.ScrollBars = ScrollBars.None;
             QueryInputTextBox.SelectionStart = 0;
-            QueryInputTextBox.Size = new Size(491, 25);
+            QueryInputTextBox.Size = new Size(200, 25);
             QueryInputTextBox.TabIndex = 1;
             QueryInputTextBox.TextAlignment = HorizontalAlignment.Left;
             // 
@@ -73,7 +71,7 @@
             SaveButton.ForeColor = Color.White;
             SaveButton.HoverColor = Color.Empty;
             SaveButton.Icon = null;
-            SaveButton.Location = new Point(641, 144);
+            SaveButton.Location = new Point(149, 62);
             SaveButton.Name = "SaveButton";
             SaveButton.Progress = 0;
             SaveButton.ProgressColor = Color.FromArgb(0, 103, 205);
@@ -85,42 +83,11 @@
             SaveButton.WriteProgress = true;
             SaveButton.Click += SaveButtonClick;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(14, 53);
-            label1.Name = "label1";
-            label1.Size = new Size(112, 16);
-            label1.TabIndex = 3;
-            label1.Text = "Query Refreshrate";
-            // 
-            // RefreshRateInput
-            // 
-            RefreshRateInput.BackColor = Color.FromArgb(65, 65, 65);
-            RefreshRateInput.Font = new Font("Tahoma", 9F);
-            RefreshRateInput.Icon = null;
-            RefreshRateInput.Location = new Point(300, 53);
-            RefreshRateInput.MaxCharacters = 32767;
-            RefreshRateInput.Multiline = false;
-            RefreshRateInput.Name = "RefreshRateInput";
-            RefreshRateInput.Padding = new Padding(8, 5, 8, 5);
-            RefreshRateInput.PasswordChar = false;
-            RefreshRateInput.PlaceHolderColor = Color.Gray;
-            RefreshRateInput.PlaceHolderText = "";
-            RefreshRateInput.ReadOnly = false;
-            RefreshRateInput.ScrollBars = ScrollBars.None;
-            RefreshRateInput.SelectionStart = 0;
-            RefreshRateInput.Size = new Size(491, 25);
-            RefreshRateInput.TabIndex = 4;
-            RefreshRateInput.TextAlignment = HorizontalAlignment.Left;
-            // 
             // ViewPluginConfiguration
             // 
             AutoScaleDimensions = new SizeF(7F, 16F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(802, 195);
-            Controls.Add(RefreshRateInput);
-            Controls.Add(label1);
+            ClientSize = new Size(436, 114);
             Controls.Add(SaveButton);
             Controls.Add(QueryInputTextBox);
             Controls.Add(QueryLabel);
@@ -135,7 +102,5 @@
         private Label QueryLabel;
         private SuchByte.MacroDeck.GUI.CustomControls.RoundedTextBox QueryInputTextBox;
         private SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary SaveButton;
-        private Label label1;
-        private SuchByte.MacroDeck.GUI.CustomControls.RoundedTextBox RefreshRateInput;
     }
 }

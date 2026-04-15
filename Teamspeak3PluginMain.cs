@@ -43,10 +43,6 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
 
         QueryKey = PluginConfiguration.GetValue(this, "ts3_query_api") ?? "";
 
-        var refreshRate = 1000;
-        if (int.TryParse(PluginConfiguration.GetValue(this, "ts3_refresh_ms"), out refreshRate))
-            RefreshIntervalMs = refreshRate;
-
         RegisterShutdownHooks();
 
         Actions = new List<PluginAction>
@@ -120,7 +116,7 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
 
         Instance = null;
     }
-    private void UpdateVariables()
+    public void UpdateVariables()
     {
         var inputState = false;
         var outputState = false;
@@ -136,20 +132,10 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
 
                 inputState = Telnet.GetInputMuteStatus(clientId);
                 outputState = Telnet.GetOutputMuteStatus(clientId);
-
-                
             }
 
             VariableManager.SetValue(ConstantsVars.InputState, inputState, VariableType.Bool, this, null);
             VariableManager.SetValue(ConstantsVars.OutputState, outputState, VariableType.Bool, this, null);
-
-            if (int.TryParse(PluginConfiguration.GetValue(this, "ts3_refresh_ms"), out var refreshRate) && RefreshIntervalMs != refreshRate)
-            {
-                if (_refreshTimer != null)
-                    _refreshTimer.Interval = (refreshRate * 1.0d);
-                
-                RefreshIntervalMs = refreshRate;
-            }
         }
         catch(Exception ex)
         {

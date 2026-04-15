@@ -34,14 +34,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Macro Deck 2">
-      <HintPath>Requirements\Macro Deck 2.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Reference Include="Macro Deck 2">
+      <HintPath>Requirements\Macro Deck 2.dll</HintPath>
+      <Private></Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

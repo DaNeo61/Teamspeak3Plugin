@@ -20,14 +20,14 @@ namespace Teamspeak3Plugin.View
         private void LoadConfig()
         {
             QueryInputTextBox.Text = PluginConfiguration.GetValue(Plugin, "ts3_query_api") ?? "";
-            RefreshRateInput.Text = PluginConfiguration.GetValue(Plugin, "ts3_refresh_ms") ?? "1000";
         }
 
 
         private void SaveButtonClick(object sender, EventArgs e)
         {
             PluginConfiguration.SetValue(Plugin, "ts3_query_api", QueryInputTextBox.Text);
-            PluginConfiguration.SetValue(Plugin, "ts3_refresh_ms", RefreshRateInput.Text);
+
+            Plugin.UpdateVariables();
             Close();
         }
     }

@@ -12,11 +12,12 @@ namespace Teamspeak3Plugin.Services
         public static TeamSpeak3Telnet Instance => MInstance ??= new TeamSpeak3Telnet();
 
         private Client Client;
+        private Teamspeak3PluginMain PluginInstance;
+
         private readonly object MLock = new object();
 
         public int ClientId = -1;
 
-        private Teamspeak3PluginMain PluginInstance;
 
         public bool IsConnected => Client?.IsConnected ?? false;
 
@@ -32,7 +33,7 @@ namespace Teamspeak3Plugin.Services
                 {
                     Client = new Client("127.0.0.1", 25639, new CancellationToken());
 
-                    if (!Client.IsConnected)
+                    if (!IsConnected)
                         return;
 
                     var welcomeMessage = Client.ReadAsync().Result;
@@ -65,7 +66,7 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                if (Client == null || !Client.IsConnected){
+                if (Client == null || !IsConnected){
                     MacroDeckLogger.Warning(PluginInstance, $"Failed to SelectCurrentServer Client not Connected"); 
                     return false;
                 }
@@ -76,6 +77,7 @@ namespace Teamspeak3Plugin.Services
                 return useResponse.Contains("msg=ok");
             }
         }
+
 
         public int GetClientId()
         {
@@ -105,7 +107,7 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                if (!Client.IsConnected) return false;
+                if (!IsConnected) return false;
 
                 if (string.IsNullOrWhiteSpace(nickname)) return false;
 
@@ -126,7 +128,7 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                if (!Client.IsConnected) return false;
+                if (!IsConnected) return false;
 
                 if (string.IsNullOrWhiteSpace(channelName)) 
                     return false;
@@ -154,7 +156,10 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                if (!Client.IsConnected) return null;
+                var channels = new List<TeamspeakChannel>();
+
+                if (!IsConnected) 
+                    return channels;
 
                 Client.WriteLineAsync("channellist");
                 var channeListResponse = Client.ReadAsync().Result;
@@ -162,7 +167,6 @@ namespace Teamspeak3Plugin.Services
                 if(!channeListResponse.Contains("msg=ok"))
                     return null;
 
-                var channels = new List<TeamspeakChannel>();
                 foreach (var tempChannel in channeListResponse.Split("|"))
                 {
                     var channel = new TeamspeakChannel(tempChannel);
@@ -181,7 +185,7 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                if (!Client.IsConnected) return false;
+                if (!IsConnected) return false;
 
                 var retries = 0;
                 while (retries < 10)
@@ -210,7 +214,7 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                if (!Client.IsConnected) return false;
+                if (!IsConnected) return false;
 
                 var retries = 0;
                 while (retries < 10)
@@ -235,7 +239,7 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                if (!Client.IsConnected) 
+                if (!IsConnected) 
                     return false;
 
                 var retries = 0;
@@ -265,7 +269,7 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                if (!Client.IsConnected) return false;
+                if (!IsConnected) return false;
 
                 var retries = 0;
                 while (retries < 10)

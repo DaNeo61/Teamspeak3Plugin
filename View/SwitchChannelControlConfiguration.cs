@@ -15,9 +15,9 @@ namespace Teamspeak3Plugin.View
 
         public SwitchChannelControlConfiguration(SwitchChannelAction action, ActionConfigurator actionConfigurator)
         {
-            InitializeComponent();
-
             Action = action;
+
+            InitializeComponent();
 
             PopulateChannels();
             LoadConfig();
@@ -33,17 +33,16 @@ namespace Teamspeak3Plugin.View
         }
         private void LoadConfig()
         {
-            if (string.IsNullOrEmpty(Action.Configuration)) return;
+            if (string.IsNullOrEmpty(Action.Configuration)) 
+                return;
+
             try
             {
                 var config = JsonConvert.DeserializeObject<PluginActionConfig>(Action.Configuration);
                 if (config != null && !string.IsNullOrEmpty(config.Value))
                 {
-                    if (!AppComboBox.Items.Contains(config.Value))
-                    {
-                        AppComboBox.Items.Add(config.Value);
-                    }
-                    AppComboBox.SelectedItem = config.Value;
+                    if (AppComboBox.Items.Contains(config.Value))
+                        AppComboBox.SelectedItem = config.Value;
                 }
             }
             catch
