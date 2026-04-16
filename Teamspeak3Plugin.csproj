@@ -12,22 +12,15 @@
     <DebugType>embedded</DebugType>
     <Description>Teamspeak 3 MacroDeck Integration Plugin - Lets you Control your Teamspeak 3 Application through the Client Query</Description>
     <EnableDynamicLoading>true</EnableDynamicLoading>
-
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
   </PropertyGroup>
-
-  <PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <OutputPath>$(AppData)\Macro Deck\plugins\DaNeo.Teamspeak3Plugin\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   
-  <ItemGroup>
-    <Compile Remove="Requirements\**" />
-    <EmbeddedResource Remove="Requirements\**" />
-    <None Remove="Requirements\**" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Telnet" Version="0.13.1" />
@@ -36,11 +29,11 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <Reference Include="Macro Deck 2">
-      <HintPath>Requirements\Macro Deck 2.dll</HintPath>
-      <Private></Private>
+    <Reference Include="MacroDeck">
+      <HintPath>$(ProgramFiles)\Macro Deck\Macro Deck 2.dll</HintPath>
+      <Private Condition="'$(Configuration)' == 'Debug'">true</Private>
     </Reference>
   </ItemGroup>
 
