@@ -27,8 +27,8 @@ public class InputMuteAction : PluginAction
             if (cId == -1)
                 return;
 
-            var outputMuteStatus = Telnet.GetInputMuteStatus(cId);
-            var newState = Telnet.SetInputMuteStatus(outputMuteStatus ? 0 : 1);
+            var inputMuteStatus = Telnet.GetInputMuteStatus(cId);
+            var newState = Telnet.SetInputMuteStatus(inputMuteStatus ? 0 : 1);
 
             SetInputStatusState(newState);
         }

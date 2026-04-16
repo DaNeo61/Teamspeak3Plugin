@@ -1,6 +1,8 @@
 ﻿using PrimS.Telnet;
 using SuchByte.MacroDeck.Logging;
+using System.Net.Http.Headers;
 using System.Net.Sockets;
+using System.Reflection.Metadata.Ecma335;
 using Teamspeak3Plugin.Helper;
 using Teamspeak3Plugin.Model;
 
@@ -17,31 +19,29 @@ namespace Teamspeak3Plugin.Services
         private readonly object MLock = new object();
 
         public int ClientId = -1;
-
-
+            
         public bool IsConnected => Client?.IsConnected ?? false;
 
-        public void SetupTelnetClient(Teamspeak3PluginMain pluginInstance, string apiKey)
+        public void SetupTelnetClient(Teamspeak3PluginMain pluginInstance, string apiKey, bool forceConnect = false)
         {
             PluginInstance = pluginInstance;
-            if (Client != null && Client.IsConnected)
+            if(IsConnected && !forceConnect)
                 return;
 
             try
             {
                 lock (MLock) 
                 {
-                    Client = new Client("127.0.0.1", 25639, new CancellationToken());
-
-                    if (!IsConnected)
-                        return;
+                    var socket = new TcpByteStream("127.0.0.1", 25639);
+                    Client = new Client(socket, new CancellationToken());
+                    if (!Client.IsConnected)
+                        throw new SocketException();
 
                     var welcomeMessage = Client.ReadAsync().Result;
                     if (!welcomeMessage.Contains("TS3 Client"))
                         return;
 
-                    Client.WriteLineAsync($"auth apikey={apiKey}");
-                    var authResponse = Client.ReadAsync().Result;
+                    var authResponse = GetTelnetResponse($"auth apikey={apiKey}");
                     if (!authResponse.Contains("msg=ok"))
                     {
                         MacroDeckLogger.Warning(PluginInstance, $"Failed to auth telnet connection: {authResponse}");
@@ -53,13 +53,19 @@ namespace Teamspeak3Plugin.Services
             }
             catch (SocketException)
             {
-                // No Message
+                Client = null;
             }
             catch(Exception ex) {
                 if (PluginInstance != null )
                     MacroDeckLogger.Error(PluginInstance, $"Failed to setup telnet connection: {ex.Message}");
             }
 
+        }
+
+        public void Dispose()
+        {
+            Client.Dispose();
+            Client = null;
         }
 
         private bool SelectCurrentServer()
@@ -71,9 +77,7 @@ namespace Teamspeak3Plugin.Services
                     return false;
                 }
 
-                Client.WriteLineAsync("use");
-                var useResponse = Client.ReadAsync().Result;
-
+                var useResponse = GetTelnetResponse("use");
                 return useResponse.Contains("msg=ok");
             }
         }
@@ -89,9 +93,7 @@ namespace Teamspeak3Plugin.Services
                 var retries = 0;
                 while (retries < 10)
                 {
-                    Client.WriteLineAsync("whoami");
-                    var whoAmIResponse = Client.ReadAsync().Result;
-
+                    var whoAmIResponse = GetTelnetResponse("whoami");
                     if (whoAmIResponse.Contains("msg=ok"))
                         return int.Parse(whoAmIResponse.Split(new[] { "clid=" }, StringSplitOptions.None)[1].Split(' ')[0].Trim());
 
@@ -190,8 +192,7 @@ namespace Teamspeak3Plugin.Services
                 var retries = 0;
                 while (retries < 10)
                 {
-                    Client.WriteLineAsync($"clientvariable clid={clientId} client_input_muted");
-                    var inputMuteStatusIResponse = Client.ReadAsync().Result;
+                    var inputMuteStatusIResponse = GetTelnetResponse($"clientvariable clid={clientId} client_input_muted");
                     if (inputMuteStatusIResponse.Contains("msg=ok") && int.TryParse(inputMuteStatusIResponse.Split(new[] { "client_input_muted=" }, StringSplitOptions.None)[1].Split('\n')[0].Trim(), out var state))
                     {
                         switch (state)
@@ -219,9 +220,7 @@ namespace Teamspeak3Plugin.Services
                 var retries = 0;
                 while (retries < 10)
                 {
-                    Client.WriteLineAsync($"clientupdate client_input_muted={inputMuteStatus}");
-                    var setInputMuteStatusResponse = Client.ReadAsync().Result;
-
+                    var setInputMuteStatusResponse = GetTelnetResponse($"clientupdate client_input_muted={inputMuteStatus}");
                     if (setInputMuteStatusResponse.Contains("msg=ok")) return true;
 
                     retries++;
@@ -245,9 +244,7 @@ namespace Teamspeak3Plugin.Services
                 var retries = 0;
                 while (retries < 10)
                 {
-                    Client.WriteLineAsync($"clientvariable clid={clientId} client_output_muted");
-                    var inputMuteStatusIResponse = Client.ReadAsync().Result;
-
+                    var inputMuteStatusIResponse = GetTelnetResponse($"clientvariable clid={clientId} client_output_muted");
                     if (inputMuteStatusIResponse.Contains("msg=ok") && int.TryParse(inputMuteStatusIResponse.Split(new[] { "client_output_muted=" }, StringSplitOptions.None)[1].Split('\n')[0].Trim(), out var state))
                     {
                         switch (state)
@@ -274,9 +271,7 @@ namespace Teamspeak3Plugin.Services
                 var retries = 0;
                 while (retries < 10)
                 {
-                    Client.WriteLineAsync($"clientupdate client_output_muted={outputMuteStatus}");
-                    var setInputMuteStatusResponse = Client.ReadAsync().Result;
-
+                    var setInputMuteStatusResponse = GetTelnetResponse($"clientupdate client_output_muted={outputMuteStatus}");
                     if (setInputMuteStatusResponse.Contains("msg=ok")) return true;
 
                     retries++;
@@ -287,5 +282,27 @@ namespace Teamspeak3Plugin.Services
         }
 
         #endregion
+
+        private string GetTelnetResponse(string command)
+        {
+            lock (MLock)
+            {
+                if (!IsConnected) 
+                    return string.Empty;
+
+                try
+                {
+                    Client.WriteLineAsync(command);
+                    return Client.ReadAsync().Result;
+
+                }
+                catch (Exception ex)
+                {
+                    Client.Dispose();
+                    Client = null;
+                    return string.Empty;
+                }
+            }
+        }
     }
 }

@@ -31,6 +31,7 @@
         {
             AppComboBox = new SuchByte.MacroDeck.GUI.CustomControls.RoundedComboBox();
             refreshButton = new SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary();
+            chLabel = new Label();
             SuspendLayout();
             // 
             // AppComboBox
@@ -39,7 +40,7 @@
             AppComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             AppComboBox.Font = new Font("Tahoma", 9F);
             AppComboBox.Icon = null;
-            AppComboBox.Location = new Point(140, 14);
+            AppComboBox.Location = new Point(164, 14);
             AppComboBox.Name = "AppComboBox";
             AppComboBox.Padding = new Padding(8, 2, 8, 2);
             AppComboBox.SelectedIndex = -1;
@@ -56,7 +57,7 @@
             refreshButton.ForeColor = Color.White;
             refreshButton.HoverColor = Color.Empty;
             refreshButton.Icon = null;
-            refreshButton.Location = new Point(448, 14);
+            refreshButton.Location = new Point(472, 14);
             refreshButton.Name = "refreshButton";
             refreshButton.Progress = 0;
             refreshButton.ProgressColor = Color.FromArgb(0, 103, 205);
@@ -68,19 +69,31 @@
             refreshButton.WriteProgress = true;
             refreshButton.Click += refreshButton_Click;
             // 
+            // chLabel
+            // 
+            chLabel.AutoSize = true;
+            chLabel.Location = new Point(16, 17);
+            chLabel.Name = "chLabel";
+            chLabel.Size = new Size(85, 23);
+            chLabel.TabIndex = 2;
+            chLabel.Text = "Channel:";
+            // 
             // SwitchChannelControlConfiguration
             // 
             AutoScaleDimensions = new SizeF(10F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(chLabel);
             Controls.Add(refreshButton);
             Controls.Add(AppComboBox);
             Name = "SwitchChannelControlConfiguration";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private SuchByte.MacroDeck.GUI.CustomControls.RoundedComboBox AppComboBox;
         private SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary refreshButton;
+        private Label chLabel;
     }
 }
