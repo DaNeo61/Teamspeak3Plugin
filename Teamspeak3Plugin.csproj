@@ -29,8 +29,16 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'Debug'">
+    <Reference Include="Macro Deck 2">
+      <HintPath>..\Macro Deck 2.dll</HintPath>
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </Reference>
+  </ItemGroup>
   
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <Reference Include="MacroDeck">
       <HintPath>$(ProgramFiles)\Macro Deck\Macro Deck 2.dll</HintPath>
       <Private Condition="'$(Configuration)' == 'Debug'">true</Private>
