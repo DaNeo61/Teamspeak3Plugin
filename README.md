@@ -31,3 +31,14 @@ Teamspeak 3 Client Integration Plugin for Macro Deck 2
 4. The API Key should now be shown, copy it
 ![Addons-ClientQuery-Settings-API-Key](https://i.imgur.com/1XBTvcb.png)
 5. Paste the API Key in the settings of the Plugin
+
+
+# Version History
+
+## 1.0.0	
+- Initial Release
+
+## 1.0.1
+- Small refactorings
+- Added some error handling for disconnect handling
+- Removed deprecated Screenshots for Query API Installation in Readme
