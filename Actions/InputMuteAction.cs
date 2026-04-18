@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Teamspeak3Plugin.Helper;
 using Teamspeak3Plugin.Services;
+using static System.Windows.Forms.AxHost;
 
 namespace Teamspeak3Plugin.Actions;
 
@@ -30,7 +31,7 @@ public class InputMuteAction : PluginAction
             var inputMuteStatus = Telnet.GetInputMuteStatus(cId);
             var newState = Telnet.SetInputMuteStatus(inputMuteStatus ? 0 : 1);
 
-            SetInputStatusState(newState);
+            Telnet.UpdateInputMuteVariable(newState);
         }
 
         catch (Exception ex)
@@ -38,9 +39,5 @@ public class InputMuteAction : PluginAction
             if (Teamspeak3PluginMain.Instance != null)
                 MacroDeckLogger.Warning(Teamspeak3PluginMain.Instance, $"Failed to SetOutputMuteStatus: {ex.Message}");
         }
-    }
-    private void SetInputStatusState(bool state)
-    {
-        VariableManager.SetValue(ConstantsVars.InputState, state, VariableType.Bool, Teamspeak3PluginMain.Instance, null);
     }
 }

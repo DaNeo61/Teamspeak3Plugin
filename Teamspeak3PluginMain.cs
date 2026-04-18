@@ -41,7 +41,7 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
     public override void Enable()
     {
         Instance = this;
-        Telnet = new TeamSpeak3Telnet();
+        Telnet = new TeamSpeak3Telnet().WithPluginInstance(this);
 
         QueryKey = PluginConfiguration.GetValue(this, "ts3_query_api") ?? "";
 
@@ -117,25 +117,21 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
     }
     public void UpdateVariables()
     {
-        var inputState = false;
-        var outputState = false;
         try
         {
+            UpdateStatusIcon();
             if (!string.IsNullOrEmpty(QueryKey))
             {
-                Telnet.SetupTelnetClient(this, QueryKey);
+                Telnet.ConnectClient(QueryKey);
 
-                var clientId = Telnet.ClientId;
-                if (clientId == -1)
+                if (Telnet.ClientId == -1)
                     return;
 
-                inputState = Telnet.GetInputMuteStatus(clientId);
-                outputState = Telnet.GetOutputMuteStatus(clientId);
-                UpdateStatusIcon();
-            }
 
-            VariableManager.SetValue(ConstantsVars.InputState, inputState, VariableType.Bool, this, null);
-            VariableManager.SetValue(ConstantsVars.OutputState, outputState, VariableType.Bool, this, null);
+                Telnet.UpdateInputMuteVariable();
+                Telnet.UpdateOutputMuteVariable();
+                Telnet.UpdateCurrentChannelVariable();
+            }
         }
         catch (Exception ex)
         {

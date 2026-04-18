@@ -26,7 +26,7 @@ public class OutputMuteAction : PluginAction
             var outputMuteStatus = Telnet.GetOutputMuteStatus(cId);
             var newState = Telnet.SetOutputMuteStatus(outputMuteStatus ? 0 : 1);
 
-            SetOutputStatusState(newState);
+            Telnet.UpdateOutputMuteVariable(newState);
         }
 
         catch (Exception ex)
@@ -34,9 +34,5 @@ public class OutputMuteAction : PluginAction
             if (Teamspeak3PluginMain.Instance != null)
                 MacroDeckLogger.Warning(Teamspeak3PluginMain.Instance, $"Failed to SetOutputMuteStatus: {ex.Message}");
         }
-    }
-    private void SetOutputStatusState(bool state)
-    {
-        VariableManager.SetValue(ConstantsVars.OutputState, state, VariableType.Bool, Teamspeak3PluginMain.Instance, null);
     }
 }
