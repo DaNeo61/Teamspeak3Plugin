@@ -6,17 +6,16 @@ Teamspeak 3 Client Integration Plugin for Macro Deck 2
 - Un-/Mute Input
 - Un-/Mute Output
 - Switch to Configured Channel
+- Change Nickname to Configured
 ### Variables
 - Input State (un-/muted)
 - Output State (un-/muted)
+- Current Channelname
 
 ## Planned Features
 ### Actions
-- Change Nickname to Configured
 - Away Options
-
 ### Variables
-- ChannelName
 - Talkstate
 
 ## Requirements
@@ -42,3 +41,8 @@ Teamspeak 3 Client Integration Plugin for Macro Deck 2
 - Small refactorings
 - Added some error handling for disconnect handling
 - Removed deprecated Screenshots for Query API Installation in Readme
+
+## 1.0.2
+- Fixed a command naming which caused the plugin to not work 
+- Change Current Nickname Action
+- Current Channelname Variable

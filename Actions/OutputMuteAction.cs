@@ -1,13 +1,9 @@
 ﻿using SuchByte.MacroDeck.ActionButton;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
-using SuchByte.MacroDeck.Variables;
-using Teamspeak3Plugin.Helper;
 using Teamspeak3Plugin.Services;
 
-
 namespace Teamspeak3Plugin.Actions;
-
 public class OutputMuteAction : PluginAction
 {
     public override string Name => "Mute/Unmute Output";

@@ -1,18 +1,9 @@
 ﻿using SuchByte.MacroDeck.ActionButton;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
-using SuchByte.MacroDeck.Variables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Teamspeak3Plugin.Helper;
 using Teamspeak3Plugin.Services;
-using static System.Windows.Forms.AxHost;
 
 namespace Teamspeak3Plugin.Actions;
-
 public class InputMuteAction : PluginAction
 {
     public override string Name => "Mute/Unmute Input";

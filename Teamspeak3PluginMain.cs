@@ -2,9 +2,7 @@
 using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
-using SuchByte.MacroDeck.Variables;
 using Teamspeak3Plugin.Actions;
-using Teamspeak3Plugin.Helper;
 using Teamspeak3Plugin.Services;
 using Teamspeak3Plugin.View;
 
@@ -14,13 +12,14 @@ namespace Teamspeak3Plugin;
 
 public class Teamspeak3PluginMain : MacroDeckPlugin
 {
-    private ContentSelectorButton StatusButton = new();
     public static Teamspeak3PluginMain Instance;
+    private ContentSelectorButton StatusButton = new();
 
     private string QueryKey { get; set; }
     public TeamSpeak3Telnet Telnet { get; private set; }
 
     private Timer RefreshTimer;
+    private SynchronizationContext Context;
 
     private int Disposed;
     private int ShutdownHooksRegistered;
@@ -30,8 +29,6 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
     public override bool CanConfigure => true;
 
     private int RefreshIntervalMs = 1000;
-
-    private readonly object MLock = new();
 
     public Teamspeak3PluginMain()
     {
@@ -44,6 +41,7 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
         Telnet = new TeamSpeak3Telnet().WithPluginInstance(this);
 
         QueryKey = PluginConfiguration.GetValue(this, "ts3_query_api") ?? "";
+        Context = SynchronizationContext.Current ?? new SynchronizationContext();
 
         RegisterShutdownHooks();
 
@@ -51,7 +49,8 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
         {
             new InputMuteAction(),
             new OutputMuteAction(),
-            new SwitchChannelAction()
+            new SwitchChannelAction(),
+            new ChangeNicknameAction()
         };
 
         UpdateVariables();
@@ -59,8 +58,9 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
         MacroDeckLogger.Info(this, $"Teamspeak 3 Integration got enabled!");
 
         RefreshTimer = new Timer(RefreshIntervalMs) { AutoReset = true };
-        RefreshTimer.Elapsed += (_, _) => UpdateVariables();
+        RefreshTimer.Elapsed += (_, _) => Context?.Post(_ => UpdateVariables(), null);
         RefreshTimer.Start();
+
     }
 
     private void MacroDeckLoaded(object? sender, EventArgs e)
@@ -72,7 +72,6 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
         StatusButton.Click += (_, _) =>  OpenConfigurator();
 
         MacroDeckMainWindow?.contentButtonPanel.Controls.Add(StatusButton);
-        UpdateStatusIcon();
     }
 
     private void UpdateStatusIcon()

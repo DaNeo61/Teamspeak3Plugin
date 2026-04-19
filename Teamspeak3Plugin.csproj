@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Teamspeak3Plugin</AssemblyName>
     <RootNamespace>Teamspeak3Plugin</RootNamespace>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>DaNeo</Authors>
     <DebugType>embedded</DebugType>
     <Description>Teamspeak 3 MacroDeck Integration Plugin - Lets you Control your Teamspeak 3 Application through the Client Query</Description>

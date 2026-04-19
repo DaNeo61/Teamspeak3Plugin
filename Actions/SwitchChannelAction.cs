@@ -3,11 +3,9 @@ using SuchByte.MacroDeck.ActionButton;
 using SuchByte.MacroDeck.GUI;
 using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Plugins;
-using System.Xml.Linq;
 using Teamspeak3Plugin.Model;
 using Teamspeak3Plugin.Services;
 using Teamspeak3Plugin.View;
-using MacroDeckRoundedComboBox = SuchByte.MacroDeck.GUI.CustomControls.RoundedComboBox;
 
 namespace Teamspeak3Plugin.Actions;
 public class SwitchChannelAction : PluginAction
