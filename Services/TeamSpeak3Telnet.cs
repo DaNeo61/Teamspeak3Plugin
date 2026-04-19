@@ -4,7 +4,6 @@ using SuchByte.MacroDeck.Variables;
 using System.Net.Sockets;
 using Teamspeak3Plugin.Helper;
 using Teamspeak3Plugin.Model;
-using static System.Windows.Forms.AxHost;
 
 namespace Teamspeak3Plugin.Services
 {
@@ -126,7 +125,7 @@ namespace Teamspeak3Plugin.Services
             for (int retries = 0; retries < RetryCount; retries++)
             {
                 var whoAmIResponse = GetTelnetResponse("whoami");
-                if (whoAmIResponse.Contains("msg=ok") && TryParseKeyIntValue(whoAmIResponse, "whoami=", out var clientId))
+                if (whoAmIResponse.Contains("msg=ok") && TryParseKeyIntValue(whoAmIResponse, "clid=", out var clientId))
                     return clientId;
             }
             return -1;
