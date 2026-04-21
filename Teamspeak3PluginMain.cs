@@ -19,7 +19,7 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
     public TeamSpeak3Telnet Telnet { get; private set; }
 
     private Timer RefreshTimer;
-    private SynchronizationContext Context;
+    private SynchronizationContext Context => SynchronizationContext.Current ?? new SynchronizationContext();
 
     private int Disposed;
     private int ShutdownHooksRegistered;
@@ -28,20 +28,23 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
 
     public override bool CanConfigure => true;
 
-    private int RefreshIntervalMs = 1000;
+    private int RefreshIntervalMs = 2000;
 
     public Teamspeak3PluginMain()
     {
+        Instance = this;
+
+        StatusButton = new ContentSelectorButton();
+        StatusButton.BackgroundImageLayout = ImageLayout.Zoom;
+        StatusButton.Click += (_, _) => OpenConfigurator();
+
         SuchByte.MacroDeck.MacroDeck.OnMainWindowLoad += MacroDeckLoaded;
     }
 
     public override void Enable()
     {
-        Instance = this;
         Telnet = new TeamSpeak3Telnet().WithPluginInstance(this);
-
         QueryKey = PluginConfiguration.GetValue(this, "ts3_query_api") ?? "";
-        Context = SynchronizationContext.Current ?? new SynchronizationContext();
 
         RegisterShutdownHooks();
 
@@ -58,20 +61,18 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
         MacroDeckLogger.Info(this, $"Teamspeak 3 Integration got enabled!");
 
         RefreshTimer = new Timer(RefreshIntervalMs) { AutoReset = true };
-        RefreshTimer.Elapsed += (_, _) => Context?.Post(_ => UpdateVariables(), null);
+        RefreshTimer.Elapsed += (_, _) => Context.Post( _ => UpdateVariables(), null);
         RefreshTimer.Start();
 
     }
 
     private void MacroDeckLoaded(object? sender, EventArgs e)
     {
-        MacroDeckMainWindow = sender as MainWindow;
-
-        StatusButton = new ContentSelectorButton();
-        StatusButton.BackgroundImageLayout = ImageLayout.Zoom;
-        StatusButton.Click += (_, _) =>  OpenConfigurator();
-
-        MacroDeckMainWindow?.contentButtonPanel.Controls.Add(StatusButton);
+        if (sender is MainWindow window)
+        {
+            MacroDeckMainWindow = window;
+            window.contentButtonPanel.Controls.Add(StatusButton);
+        }
     }
 
     private void UpdateStatusIcon()

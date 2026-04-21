@@ -16,7 +16,7 @@ namespace Teamspeak3Plugin.Services
         private Teamspeak3PluginMain PluginInstance;
 
         private readonly object MLock = new object();
-        private const int CommandTimeoutMs = 5000;
+        private const int CommandTimeoutMs = 2000;
         private const int RetryCount = 10;
 
         public int ClientId = -1;
@@ -57,7 +57,7 @@ namespace Teamspeak3Plugin.Services
                         return;
                     }
 
-                    ClientId = GetClientIdInternal();
+                    ClientId = GetClientId();
                 }
                 catch (SocketException)
                 {
@@ -113,22 +113,20 @@ namespace Teamspeak3Plugin.Services
         {
             lock (MLock)
             {
-                return GetClientIdInternal();
-            }
-        }
+                if (!SelectCurrentServer()) 
+                    return -1;
 
-        private int GetClientIdInternal()
-        {
-            if (!SelectCurrentServer()) 
+                if (ClientId != -1)
+                    return ClientId;
+
+                for (int retries = 0; retries < RetryCount; retries++)
+                {
+                    var whoAmIResponse = GetTelnetResponse("whoami");
+                    if (whoAmIResponse.Contains("msg=ok") && TryParseKeyIntValue(whoAmIResponse, "clid=", out var clientId))
+                        return clientId;
+                }
                 return -1;
-
-            for (int retries = 0; retries < RetryCount; retries++)
-            {
-                var whoAmIResponse = GetTelnetResponse("whoami");
-                if (whoAmIResponse.Contains("msg=ok") && TryParseKeyIntValue(whoAmIResponse, "clid=", out var clientId))
-                    return clientId;
             }
-            return -1;
         }
 
         #region Nickname Stuff
