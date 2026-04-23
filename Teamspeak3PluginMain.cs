@@ -34,7 +34,7 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
     {
         Instance = this;
 
-        StatusButton = new ContentSelectorButton();
+        StatusButton = new ContentSelectorButton(); 
         StatusButton.BackgroundImageLayout = ImageLayout.Zoom;
         StatusButton.Click += (_, _) => OpenConfigurator();
 
@@ -66,12 +66,28 @@ public class Teamspeak3PluginMain : MacroDeckPlugin
 
     }
 
+    private void CreateAndAddStatusButton()
+    {
+        if (StatusButton != null && !StatusButton.IsDisposed)
+        {
+            MacroDeckMainWindow?.contentButtonPanel.Controls.Remove(StatusButton);
+            StatusButton.Dispose();
+        }
+
+        StatusButton = new ContentSelectorButton();
+        StatusButton.BackgroundImageLayout = ImageLayout.Zoom;
+        StatusButton.Click += (_, _) => OpenConfigurator();
+
+        MacroDeckMainWindow?.contentButtonPanel.Controls.Add(StatusButton);
+        UpdateStatusIcon();
+    }
+
     private void MacroDeckLoaded(object? sender, EventArgs e)
     {
         if (sender is MainWindow window)
         {
             MacroDeckMainWindow = window;
-            window.contentButtonPanel.Controls.Add(StatusButton);
+            CreateAndAddStatusButton();
         }
     }
 
